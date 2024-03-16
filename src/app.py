@@ -22,7 +22,7 @@ def upload_and_process_audio_files():
         
         file.save(input_path) 
         
-        enhance_input_audio("uoqdbf1epEX4UibAZ7w0NZaFU/iy9VU2/4eLkgBamoAMUhu0qkTq9Q==", input_path, output_path) 
+        enhance_input_audio("ACCESS_KEY", input_path, output_path) 
         
         return send_from_directory(app.config['OUTPUT_FOLDER'], file.filename, as_attachment=True)
 
