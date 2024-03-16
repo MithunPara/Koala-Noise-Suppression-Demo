@@ -3,21 +3,15 @@ import wave
 import struct
 import pvkoala
 
-def enhance_input_audio():
-    parser = argparse.ArgumentParser(description="Removing noise from audio files using Koala")
-    parser.add_argument("--access_key", required=True, help="AccessKey to use Koala features")
-    parser.add_argument("--input_path", required=True, help="Path to the .wav input audio file")
-    parser.add_argument("--output_path", required=True, help="Path to the .wav output audio file to save the enhanced input audio")
+def enhance_input_audio(access_key, input_path, output_path):
+    koala = pvkoala.create(access_key=access_key)
     
-    args = parser.parse_args()
-    koala = pvkoala.create(access_key=args.access_key)
-    
-    with wave.open(args.input_path, 'rb') as input_audio:
+    with wave.open(input_path, 'rb') as input_audio:
         assert input_audio.getsampwidth() == 2 
         assert input_audio.getnchannels() == 1 
         assert input_audio.getframerate() == koala.sample_rate
         
-        with wave.open(args.output_path, 'wb') as output_audio:
+        with wave.open(output_path, 'wb') as output_audio:
             output_audio.setnchannels(1)
             output_audio.setsampwidth(2)
             output_audio.setframerate(koala.sample_rate)
@@ -44,8 +38,15 @@ def enhance_input_audio():
 
                 current_sample += koala.frame_length
 
-    print("Enhanced audio has been written to %s." % (args.output_path))
+    print("Enhanced audio has been written to %s." % (output_path))
     koala.delete()
 
 if __name__ == '__main__':
-    enhance_input_audio()
+    parser = argparse.ArgumentParser(description="Removing noise from audio files using Koala")
+    parser.add_argument("--access_key", required=True, help="AccessKey to use Koala features")
+    parser.add_argument("--input_path", required=True, help="Path to the .wav input audio file")
+    parser.add_argument("--output_path", required=True, help="Path to the .wav output audio file to save the enhanced input audio")
+    
+    args = parser.parse_args()
+
+    enhance_input_audio(args.access_key, args.input_path, args.output_path)
